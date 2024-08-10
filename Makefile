@@ -1,8 +1,8 @@
-DB = baltimore.db
+DB = minnesota.db
 
 SU = poetry run sqlite-utils
 
-BBOX = -76.861861,39.096181,-76.360388,39.454149
+BBOX = -97.3,43.5,-89.5,49.4
 
 # https://maps.protomaps.com/builds/
 TODAY = $(shell date +%Y%m%d)
@@ -13,15 +13,12 @@ install:
 	npm ci
 
 build:
-	docker build . -t self-hosted-maps:latest
+	docker build . -t srccon-maps:latest
 
 container:
-	docker run --rm -it self-hosted-maps:latest
+	docker run --rm -it srccon-maps:latest
 
-tiles: public/baltimore.pmtiles public/trees.pmtiles
-
-trees: $(DB) data/trees.ndjson
-	poetry run geojson-to-sqlite $(DB) $@ data/trees.ndjson --nl --spatialite --pk ID
+tiles: public/minnesota.pmtiles
 
 fonts:
 	wget https://github.com/protomaps/basemaps-assets/archive/refs/heads/main.zip
@@ -33,23 +30,25 @@ run:
 	# https://docs.datasette.io/en/stable/settings.html#configuration-directory-mode
 	npm run dev -- --open & poetry run datasette serve . --load-extension spatialite -h 0.0.0.0
 
+samples: data/shp_env_feedlots.zip data/shp_env_wetland_mosquito_wet_areas.zip
+
 ds:
 	poetry run datasette serve . --load-extension spatialite -h 0.0.0.0
 
 clean:
 	rm -rf $(DB) $(DB)-shm $(DB)-wal public/*.pmtiles public/*.mbtiles public/fonts
 
-data/trees.ndjson:
-	poetry run ./download.py
-
 $(DB):
 	$(SU) create-database $@ --enable-wal --init-spatialite
 
-public/baltimore.pmtiles:
+public/minnesota.pmtiles:
 	pmtiles extract $(PMTILES_BUILD) $@ --bbox="$(BBOX)"
 
-public/trees.pmtiles: data/trees.ndjson
-	tippecanoe -zg -o $@ --drop-densest-as-needed --layer trees $^
+data:
+	mkdir -p data
 
-public/trees.mbtiles: data/trees.ndjson
-	tippecanoe -zg -o $@ --drop-densest-as-needed --layer trees $^
+data/shp_env_feedlots.zip: data
+	wget -O $@ https://resources.gisdata.mn.gov/pub/gdrs/data/pub/us_mn_state_pca/env_feedlots/shp_env_feedlots.zip
+
+data/shp_env_wetland_mosquito_wet_areas.zip: data
+	wget -O $@ https://resources.gisdata.mn.gov/pub/gdrs/data/pub/org_mmcd/env_wetland_mosquito_wet_areas/shp_env_wetland_mosquito_wet_areas.zip

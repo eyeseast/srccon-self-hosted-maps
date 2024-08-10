@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "baltimore-trees"
+name = "srccon-self-hosted-maps"
 version = "0.1.0"
-description = "A demo project for NICAR24 in Baltimore"
+description = "A self-hosted maps demo project for SRCCon 2024"
 authors = ["Chris Amico <eyeseast@gmail.com>"]
 readme = "README.md"
 
@@ -13,6 +13,7 @@ geojson-to-sqlite = "^1.1.1"
 datasette-geojson-map = "^0.4.0"
 sqlite-colorbrewer = "^0.2"
 httpx = "^0.26.0"
+shapefile-to-sqlite = "^0.4.2"
 
 
 [tool.poetry.group.dev.dependencies]

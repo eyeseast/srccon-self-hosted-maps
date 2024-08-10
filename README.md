@@ -5,9 +5,9 @@ This repo contains a Dockerfile and dev container configuration that will build 
 - `pmtiles` CLI
 - `tippecanoe`
 - NodeJS
-- Python
+- Python (to explore data with [datasette])
 
-The `Makefile` includes build steps for an example project mapping trees in Baltimore. You can see the finished project [on Github](https://github.com/eyeseast/baltimore-trees).
+The `Makefile` includes build steps for a street map of the state of Minnesota. However, this map is unfinished, and it will be up to you how to complete it.
 
 [Read more about self-hosted maps](https://www.muckrock.com/news/archives/2024/feb/13/release-notes-how-to-make-self-hosted-maps-that-work-everywhere-cost-next-to-nothing-and-might-even-work-in-airplane-mode/).
 
@@ -46,7 +46,7 @@ brew install libspatialite
 
 Building the final map requires NodeJS. I recommend either downloading the [current LTS version](https://nodejs.org/en) or using a version manager like [`nodenv`](https://github.com/nodenv/nodenv).
 
-To explore the included tree data with [datasette](https://datasette.io/), you'll need a working Python environment. You can follow my [recommended Python setup](https://chrisamico.com/blog/2023-01-14/python-setup/). This repo uses Poetry instead of Pipenv, so install that using `pipx install poetry`.
+To explore data with [datasette](https://datasette.io/), you'll need a working Python environment. You can follow my [recommended Python setup](https://chrisamico.com/blog/2023-01-14/python-setup/). This repo uses Poetry instead of Pipenv, so install that using `pipx install poetry`.
 
 Once Python and NodeJS are configured, run `make install` to download dependencies for both environments.
 
@@ -61,17 +61,32 @@ make fonts
 npm run dev
 ```
 
-We have two sets of tiles: the underlying street map, and the point data for trees. Running `make tiles` will get both. Street tiles are extracted from today's [Protomaps build](https://maps.protomaps.com/builds/). We use [tippecanoe](https://github.com/felt/tippecanoe) to turn tree data into tiles.
+Running `make tiles` will extract a PMTiles file of OpenStreetMap data from today's [Protomaps build](https://maps.protomaps.com/builds/).
 
-NOTE: if you run into an error with `make tiles`, with a 404 error from build.protomaps.com, you may be one day ahead of the available protomap builds from https://maps.protomaps.com/builds/. To remedy, edit the `TODAY` variable in the `Makefile` to be a valid day that will call an available pmtiles set from https://maps.protomaps.com/builds/.
+_NOTE: if you run into an error with `make tiles`, with a 404 error from `build.protomaps.com`, you may be one day ahead of the available protomap builds from https://maps.protomaps.com/builds/. To remedy, edit the `TODAY` variable in the `Makefile` to be a valid day that will call an available pmtiles set from https://maps.protomaps.com/builds/._
 
-## Exploring tree data with Datasette
+## Exploring data with Datasette
 
-If you want to dig into Baltimore's tree inventory, you can build a SpatiaLite database and explore it with Datasette.
+Running `make samples` will download two sample datasets you might visualize:
+
+- [Feedlots in Minnesota](https://gisdata.mn.gov/dataset/env-feedlots)
+- [Metro Wetlands and Wet Areas](https://gisdata.mn.gov/en_AU/dataset/org-mmcd-env-wetland-mosquito-wet-areas)
+
+(Thanks to [Jake Steinberg](https://www.jakesteinberg.com/) for the data suggestions.)
+
+Feel free to use another dataset of your choice for this demo. Experimentation, exploration and playfulness are part of the learning process.
+
+If you want to dig into the data you've downloaded, you can build a SpatiaLite database and explore it with Datasette.
 
 ```sh
-make trees # build the database
+make minnesota.db # create a spatialite database
+
+# load data using included tools
+poetry run geojson-to-sqlite minnesota.db ...
+poetry run shapefile-to-sqlite minnesota.db ...
 make ds # run datasette
 ```
 
 Have fun.
+
+[datasette]: https://datasette.io/

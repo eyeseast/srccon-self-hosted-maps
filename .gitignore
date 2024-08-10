@@ -45,4 +45,5 @@ build
 *.pbf
 *.zip
 
+data/*
 public/fonts/
