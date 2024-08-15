@@ -14,6 +14,7 @@ datasette-geojson-map = "^0.4.0"
 sqlite-colorbrewer = "^0.2"
 httpx = "^0.26.0"
 shapefile-to-sqlite = "^0.4.2"
+fiona = "^1.9.6"
 
 
 [tool.poetry.group.dev.dependencies]
