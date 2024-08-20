@@ -17,7 +17,7 @@ This project will work with or without Docker. The easiest setup uses [Github's 
 
 ### Getting started via Github.com
 
-1. Navigate to https://github.com/eyeseast/self-hosted-maps-codespace (you might already be here)
+1. Navigate to https://github.com/eyeseast/srccon-self-hosted-maps (you might already be here)
 2. Click **Use this template**, then click **Open in a codespace**
 
 See [Codespaces Quickstart](https://docs.github.com/en/codespaces/getting-started/quickstart) for more information.
