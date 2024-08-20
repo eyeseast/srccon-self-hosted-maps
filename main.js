@@ -36,7 +36,7 @@ const map = new maplibregl.Map({
   style,
   maxBounds: [-97.3, 43.5, -89.5, 49.4],
   hash: true,
-  center: [-76.6055754, 39.2835701],
+  center: srccon,
   zoom: 12,
 });
 
